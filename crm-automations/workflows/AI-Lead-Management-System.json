@@ -1,0 +1,818 @@
+{
+  "name": "AI-Lead-Management-System",
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=AIzaSyBvOZlx3DAdetuomobmc1PZ-ZMD9n3tzdo",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "JSON",
+        "body": "{\n  \"contents\": [\n    {\n      \"parts\": [\n        {\n          \"text\": \"You are a real estate lead qualification assistant.\\n\\nYour task is to decide if a lead is HOT or NORMAL.\\n\\nRules:\\nHOT = serious buyer, has budget, clear intent, wants to buy soon\\nNORMAL = just browsing, unsure, or long timeline\\n\\nLead data:\\nBudget: {{$json.budgetRange}}\\nInterest: {{$json.interestType}}\\nTimeline: {{$json.decisionTimeline}}\\n\\nIMPORTANT:\\nReturn ONLY one word:\\nHOT or NORMAL\"\n        }\n      ]\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        528,
+        0
+      ],
+      "id": "f2046d2b-9f0d-42b1-ace6-97ec9a8caeda",
+      "name": "Gemini Lead Classifier",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e2ead2de-243c-45a8-944b-78e6ded42bef",
+              "name": "Name",
+              "value": "={{ $('Saving Lead to Database').item.json.Name }}",
+              "type": "string"
+            },
+            {
+              "id": "b58e26f6-66ff-4466-9907-21477603aa97",
+              "name": "leadStatus",
+              "value": "={{ $json.candidates[0].content.parts[0].text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        832,
+        0
+      ],
+      "id": "90548ed9-7efb-4723-8b4d-8a9822f82e6b",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "161310ad-0033-4257-97bb-a2afc9a8a83e",
+              "leftValue": "={{ $json.leadStatus }}",
+              "rightValue": "HOT",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        976,
+        0
+      ],
+      "id": "e371bec6-87df-41a2-bb51-b90679d2c102",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "content": "## TRIGGER\n\nThe Trigger will come from a lead capturing tool ex: Form",
+        "height": 272,
+        "width": 272
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -352,
+        -112
+      ],
+      "typeVersion": 1,
+      "id": "c74766ea-fd75-4e72-8dc0-ff7506bc5b8a",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "facebook/lead",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -272,
+        0
+      ],
+      "id": "5baa1497-97ff-4115-bb46-e8213154c16b",
+      "name": "LEAD",
+      "webhookId": "b4eda4ce-61ca-4da9-8164-e80c11bb9ba6"
+    },
+    {
+      "parameters": {
+        "content": "## DATA CLEANING & Saving to CRM\n\nThis part of the workflow will clean or filter the data from the lead and save it to the CRM or any Database ",
+        "height": 288,
+        "width": 368,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        -128
+      ],
+      "typeVersion": 1,
+      "id": "5b3016a1-f54a-4dbd-b5a2-de99a6d8582c",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e5d3c25b-b71a-4a88-b81a-8318495219e3",
+              "name": "body.name",
+              "value": "={{ $json.body.name }}",
+              "type": "string"
+            },
+            {
+              "id": "4abe5da5-b005-4065-8a3f-a701deca8952",
+              "name": "body.email",
+              "value": "={{ $json.body.email }}",
+              "type": "string"
+            },
+            {
+              "id": "0acfb342-8987-432f-a35c-d15a2f5a3cc5",
+              "name": "body.phone",
+              "value": "={{ $json.body.phone }}",
+              "type": "string"
+            },
+            {
+              "id": "dfc6575f-f4e0-4c5d-bc4b-9e8eebb85a24",
+              "name": "body.interestType",
+              "value": "={{ $json.body.interestType }}",
+              "type": "string"
+            },
+            {
+              "id": "62b591e9-f348-4d3c-a490-ad2ed89f571f",
+              "name": "body.budgetRange",
+              "value": "={{ $json.body.budgetRange }}",
+              "type": "string"
+            },
+            {
+              "id": "6ddcca01-56a4-4c58-b99f-c0f3e9e4e1ec",
+              "name": "body.decisionTimeline",
+              "value": "={{ $json.body.decisionTimeline }}",
+              "type": "string"
+            },
+            {
+              "id": "dea41d6f-0b1e-41f1-bd49-b07dfcd8f685",
+              "name": "body.status",
+              "value": "NEW_LEAD",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        48,
+        0
+      ],
+      "id": "1af90b1d-f8bd-4ae0-b6f9-3c1a334ed71f",
+      "name": "Data Cleaning"
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1Hv4dCxERrQ8-_d39W2Rh49KQ_JhsHcPSsNRDNwVghIE",
+          "mode": "list",
+          "cachedResultName": "n8n-lead-pipeline",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Hv4dCxERrQ8-_d39W2Rh49KQ_JhsHcPSsNRDNwVghIE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Hv4dCxERrQ8-_d39W2Rh49KQ_JhsHcPSsNRDNwVghIE/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Time Stamp": "={{ $now }}",
+            "Name": "={{ $json.body.name }}",
+            "Email": "={{ $json.body.email }}",
+            "Phone": "={{ $json.body.phone }}",
+            "Interest Type": "={{ $json.body.interestType }}",
+            "Budget Range": "={{ $json.body.budgetRange }}",
+            "Decision Timeline": "={{ $json.body.decisionTimeline }}",
+            "Status": "={{ $json.body.status }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Time Stamp",
+              "displayName": "Time Stamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Interest Type",
+              "displayName": "Interest Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Budget Range",
+              "displayName": "Budget Range",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Decision Timeline",
+              "displayName": "Decision Timeline",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        224,
+        0
+      ],
+      "id": "bc14bfa4-1a83-4231-9879-af2fa0f86473",
+      "name": "Saving Lead to Database",
+      "credentials": {
+        "googleApi": {
+          "id": "kmKvQzRaRwYcoARO",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## AI Agent\n\nThis AI node will determine whether the lead is a priority customer or a normal customer",
+        "height": 288,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        464,
+        -128
+      ],
+      "typeVersion": 1,
+      "id": "0dcc7b86-83f8-4a72-ae1e-e13fe59fcb11",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Lead Sorting\n\nThis part of the workflow will filter the AI output and check if it is HOT or NORMAL by this a separate route will go to a specific sending email node\n",
+        "height": 288,
+        "width": 336,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        784,
+        -128
+      ],
+      "typeVersion": 1,
+      "id": "9488286d-cf55-4a76-a3b1-3ae6232f37fa",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "fromEmail": "jerohkylems@gmail.com",
+        "toEmail": "={{ $('Saving Lead to Database').item.json.Email }}",
+        "subject": "Priority Consultation Booking",
+        "html": "=<div style=\"font-family: Arial, sans-serif; color: #222; line-height: 1.6;\"> <h2>Hi {{$json.Name}},</h2> <p> Thank you for your interest and for taking the time to submit your inquiry. </p> <p> Based on the information you provided, we’ve marked your request as a <strong>priority inquiry</strong>. </p> <p> We’d love to discuss the best options available for you and answer any questions you may have. </p> <p> You can book a consultation at your preferred schedule using the button below: </p> <p style=\"margin: 30px 0;\"> <a href=\"https://calendly.com/jerohkylems/30min\" style=\" background-color: #000; color: #fff; padding: 14px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; \"> Book Your Consultation </a> </p> <p> We recommend reserving a slot as early as possible as availability may become limited. </p> <p> Looking forward to speaking with you soon. </p> <br> <p> Best regards,<br> Your Company Name </p> </div>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1296,
+        -96
+      ],
+      "id": "80387c51-3a3b-436f-aa89-fb662fb594a4",
+      "name": "Priority Email",
+      "webhookId": "677155c9-dac2-4dfa-b400-fffff022b581",
+      "credentials": {
+        "smtp": {
+          "id": "WtgFaU55p24ITHqF",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "jerohkylems@gmail.com",
+        "toEmail": "={{ $('Saving Lead to Database').item.json.Email }}",
+        "subject": "Thank You for Your Inquiry",
+        "html": "=<div style=\"font-family: Arial, sans-serif; color: #222; line-height: 1.6;\"> <h2>Hi {{$json.Name}},</h2> <p> Thank you for reaching out to us. </p> <p> We’ve successfully received your inquiry and appreciate your interest. </p> <p> Our team is currently reviewing your information and will continue assisting you with the options that best fit your needs. </p> <p> If you’d like to learn more or discuss your preferences further, you may schedule a consultation anytime using the link below: </p> <p style=\"margin: 30px 0;\"> <a href=\"https://calendly.com/jerohkylems/30min\" style=\" background-color: #444; color: #fff; padding: 14px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; \"> Schedule a Consultation </a> </p> <p> Please feel free to reach out if you have any additional questions. </p> <br> <p> Best regards,<br> Your Company Name </p> </div>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1296,
+        96
+      ],
+      "id": "5178a385-61a6-4bb6-8fb8-2e5a7c15f5b1",
+      "name": "Normal Email",
+      "webhookId": "42a9fdf2-4628-434b-986c-b6bdc829bf68",
+      "credentials": {
+        "smtp": {
+          "id": "WtgFaU55p24ITHqF",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1Hv4dCxERrQ8-_d39W2Rh49KQ_JhsHcPSsNRDNwVghIE",
+          "mode": "list",
+          "cachedResultName": "n8n-lead-pipeline",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Hv4dCxERrQ8-_d39W2Rh49KQ_JhsHcPSsNRDNwVghIE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Hv4dCxERrQ8-_d39W2Rh49KQ_JhsHcPSsNRDNwVghIE/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Email": "={{ $('Saving Lead to Database').item.json.Email }}",
+            "Status": "={{ $('Gemini Lead Classifier').item.json.candidates[0].content.parts[0].text }}",
+            "Stage": "BOOK_SENT"
+          },
+          "matchingColumns": [
+            "Email"
+          ],
+          "schema": [
+            {
+              "id": "Time Stamp",
+              "displayName": "Time Stamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Interest Type",
+              "displayName": "Interest Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Budget Range",
+              "displayName": "Budget Range",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Decision Timeline",
+              "displayName": "Decision Timeline",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Stage",
+              "displayName": "Stage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1488,
+        -96
+      ],
+      "id": "2c1561ff-b5d4-4175-975f-bb3799e44689",
+      "name": "Update Status for HOT Leads",
+      "credentials": {
+        "googleApi": {
+          "id": "kmKvQzRaRwYcoARO",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1Hv4dCxERrQ8-_d39W2Rh49KQ_JhsHcPSsNRDNwVghIE",
+          "mode": "list",
+          "cachedResultName": "n8n-lead-pipeline",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Hv4dCxERrQ8-_d39W2Rh49KQ_JhsHcPSsNRDNwVghIE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Hv4dCxERrQ8-_d39W2Rh49KQ_JhsHcPSsNRDNwVghIE/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Email": "={{ $('Saving Lead to Database').item.json.Email }}",
+            "Stage": "NURTURING",
+            "Status": "={{ $('Gemini Lead Classifier').item.json.candidates[0].content.parts[0].text }}"
+          },
+          "matchingColumns": [
+            "Email"
+          ],
+          "schema": [
+            {
+              "id": "Time Stamp",
+              "displayName": "Time Stamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Interest Type",
+              "displayName": "Interest Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Budget Range",
+              "displayName": "Budget Range",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Decision Timeline",
+              "displayName": "Decision Timeline",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Stage",
+              "displayName": "Stage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1488,
+        96
+      ],
+      "id": "1ef4267a-d692-4f2e-b142-16358b035429",
+      "name": "Update Status for Normal Leads",
+      "credentials": {
+        "googleApi": {
+          "id": "kmKvQzRaRwYcoARO",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Sending Email and Updating Database\n\nFor this last part of the workflow. We will send an email for Hot and Normal leads the email is tailored for the particular status of the lead. after that we will update their status in the database",
+        "height": 544,
+        "width": 432
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1232,
+        -288
+      ],
+      "typeVersion": 1,
+      "id": "d85dda19-026b-480e-960b-e03a34bcf521",
+      "name": "Sticky Note4"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Gemini Lead Classifier": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Priority Email",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Normal Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LEAD": {
+      "main": [
+        [
+          {
+            "node": "Data Cleaning",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Cleaning": {
+      "main": [
+        [
+          {
+            "node": "Saving Lead to Database",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Saving Lead to Database": {
+      "main": [
+        [
+          {
+            "node": "Gemini Lead Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Priority Email": {
+      "main": [
+        [
+          {
+            "node": "Update Status for HOT Leads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normal Email": {
+      "main": [
+        [
+          {
+            "node": "Update Status for Normal Leads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "c7f5a9e3-cf62-4dd1-8fcf-a772dcd8bd00",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "dda9a317a6fe9e9854d95896238db903db9efcbfb6eee05a9c9bbadd118cc5ac"
+  },
+  "id": "lJ8daOdLcNdlm35i",
+  "tags": []
+}
