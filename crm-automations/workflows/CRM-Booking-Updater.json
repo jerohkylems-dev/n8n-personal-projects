@@ -1,0 +1,851 @@
+{
+  "name": "CRM-Booking-Updater",
+  "nodes": [
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "documentId": {
+          "__rl": true,
+          "value": "1Hv4dCxERrQ8-_d39W2Rh49KQ_JhsHcPSsNRDNwVghIE",
+          "mode": "list",
+          "cachedResultName": "n8n-crm",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Hv4dCxERrQ8-_d39W2Rh49KQ_JhsHcPSsNRDNwVghIE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Hv4dCxERrQ8-_d39W2Rh49KQ_JhsHcPSsNRDNwVghIE/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Email",
+              "lookupValue": "={{ $json.email }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        272,
+        0
+      ],
+      "id": "53ad7240-0f6f-44fc-bbaa-85b66585b242",
+      "name": "Get row(s) in sheet",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleApi": {
+          "id": "kmKvQzRaRwYcoARO",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.action }}",
+                    "rightValue": "update",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "b2587903-5f9e-444e-b3da-c6fd7cca373f"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "659168fe-6396-4b3d-8a28-411a6cc9472f",
+                    "leftValue": "={{ $json.action }}",
+                    "rightValue": "create",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        816,
+        0
+      ],
+      "id": "47a0fd98-bcff-42f3-9373-ac2f2a18fda9",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1Hv4dCxERrQ8-_d39W2Rh49KQ_JhsHcPSsNRDNwVghIE",
+          "mode": "list",
+          "cachedResultName": "n8n-crm",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Hv4dCxERrQ8-_d39W2Rh49KQ_JhsHcPSsNRDNwVghIE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Hv4dCxERrQ8-_d39W2Rh49KQ_JhsHcPSsNRDNwVghIE/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Email": "={{ $('Data Cleaning').item.json.email }}",
+            "Stage": "={{ $json.stage }}",
+            "Booked": "={{ $json.booked }}",
+            "Booked At": "={{ $json.createdAt }}",
+            "Meeting Date": "={{ $json.meetingDate }}"
+          },
+          "matchingColumns": [
+            "Email"
+          ],
+          "schema": [
+            {
+              "id": "Time Stamp",
+              "displayName": "Time Stamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Interest Type",
+              "displayName": "Interest Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Budget Range",
+              "displayName": "Budget Range",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Decision Timeline",
+              "displayName": "Decision Timeline",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Stage",
+              "displayName": "Stage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Follow Up",
+              "displayName": "Follow Up",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Booked",
+              "displayName": "Booked",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Last Contact",
+              "displayName": "Last Contact",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Meeting Date",
+              "displayName": "Meeting Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Booked At",
+              "displayName": "Booked At",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1184,
+        -192
+      ],
+      "id": "40b64a06-2fb0-4a1b-902b-46c57d733061",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleApi": {
+          "id": "kmKvQzRaRwYcoARO",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1Hv4dCxERrQ8-_d39W2Rh49KQ_JhsHcPSsNRDNwVghIE",
+          "mode": "list",
+          "cachedResultName": "n8n-crm",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Hv4dCxERrQ8-_d39W2Rh49KQ_JhsHcPSsNRDNwVghIE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Hv4dCxERrQ8-_d39W2Rh49KQ_JhsHcPSsNRDNwVghIE/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Time Stamp": "={{ $now }}",
+            "Name": "={{ $json.name }}",
+            "Email": "={{ $json.email }}",
+            "Status": "={{ $json.status }}",
+            "Stage": "={{ $json.stage }}",
+            "Follow Up": "0",
+            "Booked": "={{ $json.booked }}",
+            "Meeting Date": "={{ $json.meetingDate }}",
+            "Booked At": "={{ $json.createdAt }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Time Stamp",
+              "displayName": "Time Stamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Interest Type",
+              "displayName": "Interest Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Budget Range",
+              "displayName": "Budget Range",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Decision Timeline",
+              "displayName": "Decision Timeline",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Stage",
+              "displayName": "Stage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Follow Up",
+              "displayName": "Follow Up",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Booked",
+              "displayName": "Booked",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Last Contact",
+              "displayName": "Last Contact",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Meeting Date",
+              "displayName": "Meeting Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Booked At",
+              "displayName": "Booked At",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1184,
+        160
+      ],
+      "id": "2caf2643-8b6a-4cb8-81ce-adf983d2f927",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleApi": {
+          "id": "kmKvQzRaRwYcoARO",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "cal-booking",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -144,
+        0
+      ],
+      "id": "b4221330-5c7d-4151-a5d2-1b6b0e870bbd",
+      "name": "Cal.com Trigger",
+      "webhookId": "8d8299f9-0ef2-4472-bd1c-e9eaae140a5c"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "44605b6b-83cd-4c23-950e-481391d862a1",
+              "name": "name",
+              "value": "={{ $json.body.payload.attendees[0].name }}",
+              "type": "string"
+            },
+            {
+              "id": "bc995109-d382-488a-98ea-948f1b036cf3",
+              "name": "email",
+              "value": "={{ $json.body.payload.attendees[0].email }}",
+              "type": "string"
+            },
+            {
+              "id": "7b3d7ae0-1eef-46b5-86bd-a7b54373f943",
+              "name": "meetingDate",
+              "value": "={{ $json.body.payload.startTime }}",
+              "type": "string"
+            },
+            {
+              "id": "bc507ebc-95f7-4d59-8478-ae990e88d518",
+              "name": "createdAt",
+              "value": "={{ $json.body.createdAt }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        128,
+        0
+      ],
+      "id": "753ec3b3-d166-49f3-a7ed-861f4213cc49",
+      "name": "Data Cleaning"
+    },
+    {
+      "parameters": {
+        "jsCode": "const email = $('Data Cleaning').first().json.email;\n\n// all sheet rows (input from Google Sheets node)\nconst rows = $input.all();\n\nlet foundRow = null;\nlet rowIndex = -1;\n\nfor (let i = 0; i < rows.length; i++) {\n  if (rows[i].json.Email === email) {\n    foundRow = rows[i].json;\n    rowIndex = i + 2; // sheet row index (adjust if header exists)\n    break;\n  }\n}\n\nif (foundRow) {\n  return [\n    {\n      json: {\n        action: \"update\",\n      }\n    }\n  ];\n}\n\nreturn [\n  {\n    json: {\n      action: \"create\",\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        544,
+        0
+      ],
+      "id": "6943ee74-b60b-4e1b-bc80-ec6f3db39266",
+      "name": "Checker"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9d092841-f51b-4fe2-8631-ba2f3728d7e2",
+              "name": "name",
+              "value": "={{ $('Data Cleaning').item.json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "3e7fe432-cc48-4557-a3b3-c5339ff56756",
+              "name": "email",
+              "value": "={{ $('Data Cleaning').item.json.email }}",
+              "type": "string"
+            },
+            {
+              "id": "0cb96fa9-316d-40a2-a68f-74b765b54705",
+              "name": "meetingDate",
+              "value": "={{ $('Data Cleaning').item.json.meetingDate }}",
+              "type": "string"
+            },
+            {
+              "id": "a4ab7897-02bf-4db1-8d6b-de6df757caef",
+              "name": "createdAt",
+              "value": "={{ $('Data Cleaning').item.json.createdAt }}",
+              "type": "string"
+            },
+            {
+              "id": "79410108-2676-4f15-9799-be0b357a10a4",
+              "name": "stage",
+              "value": "CONVERTED",
+              "type": "string"
+            },
+            {
+              "id": "bb1c04db-2900-4de0-8080-edea3cf8b2de",
+              "name": "booked",
+              "value": "TRUE",
+              "type": "string"
+            },
+            {
+              "id": "50bee512-e6c7-4a54-98af-521a27b1462f",
+              "name": "meetingDate",
+              "value": "={{ $('Data Cleaning').item.json.meetingDate }}",
+              "type": "string"
+            },
+            {
+              "id": "a9399340-5744-4249-a908-218cc9808d29",
+              "name": "createdAt",
+              "value": "={{ $('Data Cleaning').item.json.createdAt }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1040,
+        -192
+      ],
+      "id": "09733331-aab2-4ade-8cfa-4f872655b6cf",
+      "name": "Update Field"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ac68f0cc-00f4-4b00-81ec-98fafb3a0742",
+              "name": "name",
+              "value": "={{ $('Data Cleaning').item.json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "d9472921-14ba-42cc-8e72-287b3e9f9527",
+              "name": "email",
+              "value": "={{ $('Data Cleaning').item.json.email }}",
+              "type": "string"
+            },
+            {
+              "id": "1f793d1c-09cd-4408-9606-2f79706ae28c",
+              "name": "meetingDate",
+              "value": "={{ $('Data Cleaning').item.json.meetingDate }}",
+              "type": "string"
+            },
+            {
+              "id": "a767cc47-f2f4-4902-9d7e-b2488d22e7b3",
+              "name": "createdAt",
+              "value": "={{ $('Data Cleaning').item.json.createdAt }}",
+              "type": "string"
+            },
+            {
+              "id": "d63b0a2e-ad57-4585-a062-721c771cea79",
+              "name": "status",
+              "value": "DIRECT_BOOKING",
+              "type": "string"
+            },
+            {
+              "id": "1259f58f-633d-4c4b-b280-a6af5ace5410",
+              "name": "stage",
+              "value": "CONVERTED",
+              "type": "string"
+            },
+            {
+              "id": "364234f9-ac27-4350-a10f-6c8bcd59068e",
+              "name": "booked",
+              "value": "TRUE",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1040,
+        160
+      ],
+      "id": "9eb8409d-fd95-4b71-a22f-67659d616a81",
+      "name": "Create Field"
+    },
+    {
+      "parameters": {
+        "content": "## Trigger\n\nThis trigger is coming from the calendar application that you are using ex: cal.com, calendly, etc...",
+        "height": 304
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -208,
+        -144
+      ],
+      "typeVersion": 1,
+      "id": "47d214e9-0fc0-4b05-8304-b54dcb43e24b",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Data Cleaning and Getting Row\n\nThis part is for cleaning the data that comes from the webhook and then using that data to retrieve information coming from the database",
+        "height": 336,
+        "width": 304,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        96,
+        -176
+      ],
+      "typeVersion": 1,
+      "id": "8d570797-4891-4f56-9201-1cd49ae3f023",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Update or Create\n\nThis code will determine whether the information should be update or create a new list in the database",
+        "height": 272,
+        "width": 224,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        480,
+        -128
+      ],
+      "typeVersion": 1,
+      "id": "1f58915f-ea67-45d5-8ae6-7e445a8b4be9",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Update\n\nThis route will update the status of the lead in their existing information from database",
+        "height": 288,
+        "width": 320,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1008,
+        -336
+      ],
+      "typeVersion": 1,
+      "id": "75b6031f-3c8c-44fa-bfd2-7c8612cee691",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## Create\n\nThis route will create a new list to database if there's no existing records",
+        "height": 304,
+        "width": 320,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1008,
+        16
+      ],
+      "typeVersion": 1,
+      "id": "50869396-44bd-499a-9e6e-0f5f16ae821e",
+      "name": "Sticky Note4"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Checker",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Update Field",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create Field",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cal.com Trigger": {
+      "main": [
+        [
+          {
+            "node": "Data Cleaning",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Cleaning": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Checker": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Field": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Field": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "c77ba03e-6e54-44e7-9d17-d74b161448da",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "dda9a317a6fe9e9854d95896238db903db9efcbfb6eee05a9c9bbadd118cc5ac"
+  },
+  "id": "lmQKqRBU1jqM0gia",
+  "tags": []
+}
